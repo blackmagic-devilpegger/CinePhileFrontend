@@ -4,7 +4,7 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   name: 'FilmOptionApiList',
   props: ['Title'],
-  data(inputData:string, films: string[]) {
+  data(): { inputData: string, films: string[] } {
     return {
       inputData: '',
       films: [],
@@ -13,6 +13,8 @@ export default defineComponent({
   methods: {
     saveFilm(){
       this.films.push(this.inputData)
+    }
+  }
 })
 </script>
 
