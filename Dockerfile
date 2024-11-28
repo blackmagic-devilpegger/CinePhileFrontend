@@ -14,7 +14,7 @@ RUN gradle build --no-daemon
 
 ## PACKAGE Stage ##
 FROM eclipse-temurin:21-jdk-jammy
-COPY --from=build /home/gradle/src/build/libs/webtech-ws2425-backend-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /home/gradle/src/build/libs/CinePhile-0.0.1-SNAPSHOT.jar app.jar
 
 # Startpunkt für die Ausführung der Anwendung
 ENTRYPOINT ["java", "-jar", "/app.jar"]
