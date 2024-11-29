@@ -14,17 +14,27 @@ export default defineComponent({
     }
   },
   methods: {
-    saveFilm(){
-      this.films.push({title: this.inputTitle, year: this.inputYear})
+    saveFilm() {
+      if (this.isValidYear(this.inputYear)) {
+        this.films.push({ title: this.inputTitle, year: this.inputYear });
+      } else {
+        console.log('Ungültiges Jahr eingegeben');
+      }
+    },
+
+    isValidYear(year: number): boolean {
+      return year >= 1888 && year <= 2030;
     }
   },
+
   mounted() {
     axios
-      .get<Film[] >('http://localhost:8080/films')
-      .then((response) => (this.films =response.data))
-      .catch((error) => console.log(error))
+      .get<Film[]>('http://localhost:8080/films')
+      .then((response) => (this.films = response.data))
+      .catch((error) => console.log(error));
   },
 })
+
 </script>
 
 <template>
