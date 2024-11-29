@@ -15,7 +15,7 @@ export default defineComponent({
   },
   methods: {
     saveFilm() {
-      if (Number(this.isValidYear(this.inputYear))) {
+      if (this.isValidYear(Number(this.inputYear))) {
         this.films.push({ title: this.inputTitle, year: this.inputYear });
       } else {
         console.log('Ungültiges Jahr eingegeben');
