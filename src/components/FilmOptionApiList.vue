@@ -5,16 +5,17 @@ import type { Film } from '@/model/Film'
 
 export default defineComponent({
   name: 'FilmOptionApiList',
-  props: ['Title'],
-  data(): { inputData: string, films: Film[] } {
+  props: ['Title', 'Release year'],
+  data(): { inputTitle: string, inputYear: number, films: Film[] } {
     return {
-      inputData: '',
+      inputTitle: '',
+      inputYear: 1,
       films: [],
     }
   },
   methods: {
     saveFilm(){
-      this.films.push({title: this.inputData, year: 2021})
+      this.films.push({title: this.inputTitle, year: this.inputYear})
     }
   },
   mounted() {

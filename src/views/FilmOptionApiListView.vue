@@ -1,47 +1,81 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import type { Film } from '@/model/Film'
 
 // Reaktives Array für die Filme
-const films = ref<Array<{ id: number; title: string }>>([]);
-const inputData = ref<string>(''); // Eingabe für neuen Film
+const films = ref<Film[]>([]);
+const inputTitle = ref<string>(''); // Eingabe für den neuen Film
+const inputYear = ref<number | null>(null);
 
 // Funktion zum Speichern eines neuen Films
 function saveFilm(): void {
-  if (inputData.value.trim()) {
-    films.value.push({ id: films.value.length + 1, title: inputData.value });
-    inputData.value = ''; // Eingabefeld leeren
+  if (inputTitle.value.trim() && inputYear.value) {
+    films.value.push({
+      title: inputTitle.value,
+      year: inputYear.value
+    });
+    inputTitle.value = ''; // Eingabefeld leeren
+    inputYear.value = null; // Jahr-Feld leeren
   }
 }
 
 // Funktion zum Löschen eines Films
-function deleteFilm(id: number): void {
-  films.value = films.value.filter(film => film.id !== id);
+function deleteFilm(index: number): void {
+  films.value.splice(index, 1); // Entfernt Film nach Index
 }
 
 // Beispiel-Film beim Laden der Komponente hinzufügen
 onMounted(() => {
-  films.value.push({ id: 1, title: 'Film 1' });
+  films.value.push({ title: 'Spider-Man: Homecoming', year: 2019 });
 });
+
 </script>
 
 <template>
   <div class="container">
     <h2 class="title">🎬 Meine Film-Liste</h2>
     <div class="input-container">
-      <input v-model="inputData" placeholder="Film hinzufügen" class="film-input"/>
-      <button @click="saveFilm" class="add-button">Film hinzufügen</button>
+      <!-- Eingabefeld für den Titel -->
+      <input
+        v-model="inputTitle"
+        placeholder="Film hinzufügen"
+        class="film-input"
+      />
+      <!-- Eingabefeld für das Jahr -->
+      <input
+        v-model.number="inputYear"
+        type="number"
+        placeholder="Jahr"
+        class="film-input"
+      />
+      <!-- Hinzufügen-Button -->
+      <button @click="saveFilm" class="add-button">
+        Film hinzufügen
+      </button>
     </div>
 
-    <p v-if="films.length < 1" class="warning">Keine Filme vorhanden</p>
+    <!-- Nachricht anzeigen, wenn keine Filme vorhanden sind -->
+    <p v-if="films.length < 1" class="warning">
+      Keine Filme vorhanden
+    </p>
 
+    <!-- Liste der Filme -->
     <ul class="film-list">
-      <li v-for="film in films" :key="film.id" class="film-item">
-        <span class="film-title">{{ film.title }}</span>
-        <button @click="deleteFilm(film.id)" class="delete-button">Löschen</button>
+      <li v-for="(film, index) in films" :key="index" class="film-item">
+        <span class="film-title">
+          {{ film.title }} ({{ film.year }})
+        </span>
+        <button
+          @click="deleteFilm(index)"
+          class="delete-button"
+        >
+          Löschen
+        </button>
       </li>
     </ul>
   </div>
 </template>
+
 
 <style scoped>
 .container {
@@ -50,7 +84,7 @@ onMounted(() => {
   padding: 1em;
   border-radius: 8px;
   background-color: #f5f5f5;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .title {
