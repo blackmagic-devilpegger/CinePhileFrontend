@@ -3,6 +3,8 @@ import { defineComponent } from 'vue'
 import axios from 'axios'
 import type { Film } from '@/model/Film'
 
+const apiEndpoint = import.meta.env.VITE_APP_BACKEND_BASE_URL
+
 export default defineComponent({
   name: 'FilmOptionApiList',
   props: ['Title', 'Release year'],
@@ -29,7 +31,7 @@ export default defineComponent({
 
   mounted() {
     axios
-      .get<Film[]>('http://localhost:8080/films')
+      .get<Film[]>(apiEndpoint)
       .then((response) => (this.films = response.data))
       .catch((error) => console.log(error));
   },
