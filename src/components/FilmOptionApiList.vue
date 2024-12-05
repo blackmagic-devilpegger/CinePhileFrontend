@@ -3,7 +3,7 @@ import { defineComponent } from 'vue'
 import axios from 'axios'
 import type { Film } from '@/model/Film'
 
-const apiEndpoint = import.meta.env.VITE_APP_BACKEND_BASE_URL
+const apiEndpoint = import.meta.env.VITE_APP_BACKEND_BASE_URL + '/films'
 
 export default defineComponent({
   name: 'FilmOptionApiList',
