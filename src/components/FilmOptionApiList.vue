@@ -35,7 +35,14 @@ export default defineComponent({
       .then((response) => (this.films = response.data))
       .catch((error) => console.log(error));
   },
-})
+},
+  function requestFilms(): void{
+  axios
+    .get<Film[]>(apiEndpoint)
+    .then((response) =>(films.value = response.data))
+    .catch((error) => console.log(error))
+  }
+)
 
 </script>
 
