@@ -20,7 +20,7 @@ const router = createRouter({
     {
       path: '/film-option-api-list',
       name: 'Film Option List',
-      component: () => import('../views/FilmOptionApiListView.vue')
+      component: () => import('../views/FilmList.vue')
     }
   ]
 })

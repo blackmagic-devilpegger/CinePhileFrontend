@@ -1,65 +1,77 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import type { Film } from '@/model/Film'
+import axios from 'axios';
+import type { Film } from '@/model/Film';
 
-// Reaktives Array für die Filme
+const apiEndpoint = import.meta.env.VITE_APP_BACKEND_BASE_URL + '/films';
+
+// Reactive properties
 const films = ref<Film[]>([]);
-const inputTitle = ref<string>(''); // Eingabe für den neuen Film
+const inputTitle = ref<string>('');
 const inputYear = ref<number | null>(null);
 
-// Funktion zum Speichern eines neuen Films
+// Fetch films from API on mount
+onMounted(() => {
+  axios
+    .get<Film[]>(apiEndpoint)
+    .then((response) => (films.value = response.data))
+    .catch((error) => console.log(error));
+});
+
+// Add a new film
 function saveFilm(): void {
-  if (inputTitle.value.trim() && inputYear.value) {
+  if (inputTitle.value.trim() && inputYear.value && isValidYear(inputYear.value)) {
     films.value.push({
       title: inputTitle.value,
-      year: inputYear.value
+      year: inputYear.value,
     });
-    inputTitle.value = ''; // Eingabefeld leeren
-    inputYear.value = null; // Jahr-Feld leeren
+    inputTitle.value = '';
+    inputYear.value = null;
+  } else {
+    console.log('Bitte geben Sie einen gültigen Titel und ein gültiges Jahr ein.');
   }
 }
 
-// Funktion zum Löschen eines Films
+// Delete a film by index
 function deleteFilm(index: number): void {
-  films.value.splice(index, 1); // Entfernt Film nach Index
+  films.value.splice(index, 1);
 }
 
-// Beispiel-Film beim Laden der Komponente hinzufügen
-onMounted(() => {
-  films.value.push({ title: 'Spider-Man: Homecoming', year: 2019 });
-});
-
+// Validate year
+function isValidYear(year: number): boolean {
+  return year >= 1888 && year <= 2030;
+}
 </script>
 
 <template>
   <div class="container">
     <h2 class="title">🎬 Meine Film-Liste</h2>
     <div class="input-container">
-      <!-- Eingabefeld für den Titel -->
+      <!-- Input for film title -->
       <input
         v-model="inputTitle"
         placeholder="Film hinzufügen"
         class="film-input"
       />
-      <!-- Eingabefeld für das Jahr -->
+      <!-- Input for film year -->
       <input
         v-model.number="inputYear"
         type="number"
         placeholder="Jahr"
         class="film-input"
       />
-      <!-- Hinzufügen-Button -->
+      <!-- Add film button -->
       <button @click="saveFilm" class="add-button">
         Film hinzufügen
       </button>
     </div>
 
-    <!-- Nachricht anzeigen, wenn keine Filme vorhanden sind -->
+    <!-- Message if no films available -->
     <p v-if="films.length < 1" class="warning">
       Keine Filme vorhanden
     </p>
 
-    <!-- Liste der Filme -->
+    <!-- List of films -->
     <ul class="film-list">
       <li v-for="(film, index) in films" :key="index" class="film-item">
         <span class="film-title">
@@ -75,7 +87,6 @@ onMounted(() => {
     </ul>
   </div>
 </template>
-
 
 <style scoped>
 .container {
