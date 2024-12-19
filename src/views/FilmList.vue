@@ -9,27 +9,40 @@ const apiEndpoint = import.meta.env.VITE_APP_BACKEND_BASE_URL + '/films';
 const films = ref<Film[]>([]);
 const inputTitle = ref<string>('');
 const inputYear = ref<number | null>(null);
+const errorMessage = ref<string>('');
 
 // Fetch films from API on mount
 onMounted(() => {
   axios
     .get<Film[]>(apiEndpoint)
     .then((response) => (films.value = response.data))
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      errorMessage.value = 'Fehler beim Laden der Filme.';
+    });
 });
 
 // Add a new film
 function saveFilm(): void {
-  if (inputTitle.value.trim() && inputYear.value && isValidYear(inputYear.value)) {
-    films.value.push({
-      title: inputTitle.value,
-      year: inputYear.value,
-    });
-    inputTitle.value = '';
-    inputYear.value = null;
-  } else {
-    console.log('Bitte geben Sie einen gültigen Titel und ein gültiges Jahr ein.');
+  errorMessage.value = ''; // Reset error message
+  if (!inputTitle.value.trim()) {
+    errorMessage.value = 'Bitte geben Sie einen Titel ein.';
+    return;
   }
+  if (!inputYear.value) {
+    errorMessage.value = 'Bitte geben Sie ein Jahr ein.';
+    return;
+  }
+  if (!isValidYear(inputYear.value)) {
+    errorMessage.value = 'Bitte geben Sie ein gültiges Jahr zwischen 1888 und 2030 ein.';
+    return;
+  }
+
+  films.value.push({
+    title: inputTitle.value,
+    year: inputYear.value,
+  });
+  inputTitle.value = '';
+  inputYear.value = null;
 }
 
 // Delete a film by index
@@ -44,58 +57,81 @@ function isValidYear(year: number): boolean {
 </script>
 
 <template>
-  <div class="container">
-    <h2 class="title">🎬 Meine Film-Liste</h2>
-    <div class="input-container">
-      <!-- Input for film title -->
-      <input
-        v-model="inputTitle"
-        placeholder="Film hinzufügen"
-        class="film-input"
-      />
-      <!-- Input for film year -->
-      <input
-        v-model.number="inputYear"
-        type="number"
-        placeholder="Jahr"
-        class="film-input"
-      />
-      <!-- Add film button -->
-      <button @click="saveFilm" class="add-button">
-        Film hinzufügen
-      </button>
+  <div class="outer-container">
+    <div class="inner-container">
+      <h2 class="title">🎬 Meine Film-Liste</h2>
+
+      <div class="content-wrapper">
+        <div class="input-container">
+          <!-- Input for film title -->
+          <input
+            v-model="inputTitle"
+            placeholder="Film hinzufügen"
+            class="film-input"
+          />
+          <!-- Input for film year -->
+          <input
+            v-model.number="inputYear"
+            type="number"
+            placeholder="Jahr"
+            class="film-input year-input"
+          />
+          <!-- Add film button -->
+          <button @click="saveFilm" class="add-button">
+            Film hinzufügen
+          </button>
+        </div>
+
+        <!-- Error message -->
+        <p v-if="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </p>
+
+        <!-- Message if no films available -->
+        <p v-if="films.length < 1" class="warning">
+          Keine Filme vorhanden
+        </p>
+
+        <!-- List of films -->
+        <ul class="film-list">
+          <li v-for="(film, index) in films" :key="index" class="film-item">
+            <span class="film-title">
+              {{ film.title }} ({{ film.year }})
+            </span>
+            <button
+              @click="deleteFilm(index)"
+              class="delete-button"
+            >
+              Löschen
+            </button>
+          </li>
+        </ul>
+      </div>
     </div>
-
-    <!-- Message if no films available -->
-    <p v-if="films.length < 1" class="warning">
-      Keine Filme vorhanden
-    </p>
-
-    <!-- List of films -->
-    <ul class="film-list">
-      <li v-for="(film, index) in films" :key="index" class="film-item">
-        <span class="film-title">
-          {{ film.title }} ({{ film.year }})
-        </span>
-        <button
-          @click="deleteFilm(index)"
-          class="delete-button"
-        >
-          Löschen
-        </button>
-      </li>
-    </ul>
   </div>
 </template>
 
 <style scoped>
-.container {
+.outer-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 2em;
+  background-color: #f0f0f0;
+}
+
+.inner-container {
+  width: 100%;
   max-width: 500px;
-  margin: 0 auto;
-  padding: 1em;
-  border-radius: 8px;
   background-color: #f5f5f5;
-  box-shadow: 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.content-wrapper {
+  padding: 1em;
 }
 
 .title {
@@ -103,7 +139,10 @@ function isValidYear(year: number): boolean {
   text-align: center;
   font-weight: bold;
   font-size: 1.8em;
-  margin-bottom: 1em;
+  margin: 0;
+  padding: 0.8em;
+  background-color: white;
+  border-bottom: 2px solid #ff634730;
 }
 
 .input-container {
@@ -120,6 +159,10 @@ function isValidYear(year: number): boolean {
   font-size: 1em;
 }
 
+.year-input {
+  max-width: 100px;
+}
+
 .add-button {
   padding: 0.6em 1em;
   background-color: #ff6347;
@@ -128,10 +171,21 @@ function isValidYear(year: number): boolean {
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
+  white-space: nowrap;
 }
 
 .add-button:hover {
   background-color: #ff7f50;
+}
+
+.error-message {
+  color: #e74c3c;
+  text-align: center;
+  font-weight: bold;
+  margin: 1em 0;
+  padding: 0.5em;
+  background-color: #ffebee;
+  border-radius: 4px;
 }
 
 .warning {
@@ -144,6 +198,7 @@ function isValidYear(year: number): boolean {
 .film-list {
   list-style-type: none;
   padding: 0;
+  margin: 0;
 }
 
 .film-item {
