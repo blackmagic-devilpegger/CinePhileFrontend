@@ -17,13 +17,12 @@ onMounted(() => {
     .get<Film[]>(apiEndpoint)
     .then((response) => (films.value = response.data))
     .catch((error) => {
-      errorMessage.value = 'Fehler beim Laden der Filme.';
+      error.value = 'Fehler beim Laden der Filme.';
     });
 });
 
 // Add a new film
 function saveFilm(): void {
-  errorMessage.value = ''; // Reset error message
   if (!inputTitle.value.trim()) {
     errorMessage.value = 'Bitte geben Sie einen Titel ein.';
     return;
@@ -37,10 +36,19 @@ function saveFilm(): void {
     return;
   }
 
-  films.value.push({
+  const newFilm: Film = {
     title: inputTitle.value,
     year: inputYear.value,
-  });
+  };
+
+  axios
+    .post(apiEndpoint, newFilm)
+    .then((response) => {
+      console.log(response.data);
+      return axios.get<Film[]>(apiEndpoint);
+    })
+    .then((response) => (films.value = response.data))
+    .catch((error) => console.log(error));
   inputTitle.value = '';
   inputYear.value = null;
 }
