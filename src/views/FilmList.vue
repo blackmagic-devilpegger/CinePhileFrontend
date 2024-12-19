@@ -43,9 +43,7 @@ function saveFilm(): void {
 
   axios
     .post(apiEndpoint, newFilm)
-    .then((response) => {
-      console.log(response.data);
-      return axios.get<Film[]>(apiEndpoint);
+    .then(() => { return axios.get<Film[]>(apiEndpoint);
     })
     .then((response) => (films.value = response.data))
     .catch((error) => console.log(error));
