@@ -140,10 +140,9 @@ function isValidYear(year: number): boolean {
 .outer-container {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   min-height: 100vh;
   padding: 2em;
-  background-color: #f0f0f0;
 }
 
 .inner-container {
@@ -160,14 +159,13 @@ function isValidYear(year: number): boolean {
 }
 
 .title {
-  color: #ff6347;
+  color: #6e3397;
   text-align: center;
   font-weight: bold;
   font-size: 1.8em;
   margin: 0;
   padding: 0.8em;
-  background-color: white;
-  border-bottom: 2px solid #ff634730;
+  background-color: #f5f5f5;
 }
 
 .input-container {
@@ -179,7 +177,7 @@ function isValidYear(year: number): boolean {
 .film-input {
   flex-grow: 1;
   padding: 0.6em;
-  border: 2px solid #ff6347;
+  border: 2px solid #552672;
   border-radius: 4px;
   font-size: 1em;
 }
@@ -190,7 +188,7 @@ function isValidYear(year: number): boolean {
 
 .add-button {
   padding: 0.6em 1em;
-  background-color: #ff6347;
+  background-color: #6e3397;
   color: white;
   border: none;
   border-radius: 4px;
@@ -231,7 +229,7 @@ function isValidYear(year: number): boolean {
   align-items: center;
   justify-content: space-between;
   padding: 0.8em;
-  background-color: #ffefdb;
+  background-color: #eee9f3;
   margin-bottom: 0.5em;
   border-radius: 4px;
 }
@@ -242,7 +240,7 @@ function isValidYear(year: number): boolean {
 }
 
 .delete-button {
-  background-color: #e74c3c;
+  background-color: #6e3397;
   color: white;
   border: none;
   border-radius: 4px;

@@ -4,18 +4,18 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <template>
   <header>
-    <img alt="Cinephile Logo" class="logo" src="@/assets/trainspotting.jpg" width="150" height="150" />
+    <img alt="Cinephile Logo" class="logo" src="@/assets/trainspotting.jpg" width="180" height="180" />
 
     <div class="wrapper">
       <h1>Cinephile🫐🪼🦋💫</h1>
-      <p>Verwalte deine Liebe für Filme</p>
+      <p>Verwalte deine Liebe für Filme 📽️</p>
 
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/film-option-api-list">Filmliste</RouterLink>
         <RouterLink to="/about">Watchlist</RouterLink>
       </nav>
-    </div>
+      </div>
   </header>
 
   <RouterView />
@@ -31,6 +31,19 @@ body, html{
   background-attachment: fixed;
   font-family: Garamond, serif;
 }
+.wrapper {
+  color: #6e3397;
+  text-align: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1em;
+  margin: 0;
+  padding: 0.8em;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  justify-content: center;
+}
 
 header {
   line-height: 1.5;
@@ -43,6 +56,9 @@ header {
 }
 
 nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   font-size: 12px;
   text-align: center;
@@ -80,12 +96,12 @@ nav a:first-of-type {
 
   header .wrapper {
     display: flex;
-    place-items: flex-start;
+    place-items: center;
     flex-wrap: wrap;
   }
 
   nav {
-    text-align: left;
+    text-align: center;
     margin-left: -1rem;
     font-size: 1rem;
 
