@@ -2,7 +2,6 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import type { Film } from '@/model/Film';
-import { v4 as uuidv4 } from 'uuid';
 
 
 const apiEndpoint = import.meta.env.VITE_APP_BACKEND_BASE_URL + '/films';
@@ -12,6 +11,7 @@ const films = ref<Film[]>([]);
 const inputTitle = ref<string>('');
 const inputYear = ref<number | null>(null);
 const errorMessage = ref<string>('');
+let currentID = 0;
 
 // Fetch films from API on mount
 onMounted(() => {
@@ -41,7 +41,7 @@ function saveFilm(): void {
   const newFilm: Film = {
     title: inputTitle.value,
     year: inputYear.value,
-    id: uuidv4(),
+    id: currentID++,
   };
 
   axios
