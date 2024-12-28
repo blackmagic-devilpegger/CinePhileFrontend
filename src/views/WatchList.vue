@@ -3,7 +3,6 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import type { Film } from '@/model/Film';
 
-
 const apiEndpoint = import.meta.env.VITE_APP_BACKEND_BASE_URL + '/films';
 
 const films = ref<Film[]>([]);
@@ -17,14 +16,14 @@ onMounted(() => {
   axios
     .get<Film[]>(apiEndpoint)
     .then((response) => {
-      films.value = response.data.filter((film) => film.watched);
+      films.value = response.data;
     })
-    .catch((error) => {
-      error.value = 'Fehler beim Laden der Filme.';
+    .catch((errorMessage  ) => {
+      errorMessage.value = 'Fehler beim Laden der Filme.';
     });
 });
 
-// Add a new film
+// Add a new film to the list
 function saveFilm(): void {
   if (!inputTitle.value.trim()) {
     errorMessage.value = 'Bitte geben Sie einen Titel ein.';
@@ -43,7 +42,7 @@ function saveFilm(): void {
     title: inputTitle.value,
     year: inputYear.value,
     id: currentID++,
-    watched: true,
+    watched: false,
   };
 
   axios
@@ -56,7 +55,26 @@ function saveFilm(): void {
   inputYear.value = null;
 }
 
-// Delete a film by index
+// Mark a film as watched
+function markAsWatched(film: Film): void {
+  const updatedFilm = { ...film, watched: !film.watched }; // Flip watched status
+
+  axios
+    .put(`${apiEndpoint}/${film.id}`, updatedFilm) // Sende das aktualisierte Film-Objekt
+    .then(() => {
+      console.log(`Film "${film.title}" wurde ${updatedFilm.watched ? 'als gesehen' : 'als ungesehen'} markiert.`);
+      return axios.get<Film[]>(apiEndpoint); // Filme erneut abrufen, um die Liste zu aktualisieren
+    })
+    .then((response) => {
+      films.value = response.data; // Aktualisiere die Liste
+    })
+    .catch((error) => {
+      console.error('Fehler beim Aktualisieren des Films:', error.message);
+    });
+}
+
+
+
 function deleteFilm(id: number): void {
   axios
     .delete(`${apiEndpoint}/${id}`)
@@ -76,8 +94,6 @@ function deleteFilm(id: number): void {
     });
 }
 
-
-// Validate year
 function isValidYear(year: number): boolean {
   return year >= 1888 && year <= 2030;
 }
@@ -86,57 +102,55 @@ function isValidYear(year: number): boolean {
 <template>
   <div class="outer-container">
     <div class="inner-container">
-      <h2 class="title">🎬 Meine Film-Liste</h2>
+      <h2 class="title">🎬 Meine Watchlist</h2>
 
       <div class="content-wrapper">
-        <div class="input-container">
-          <ul>
-          <li v-for="film in films.filter(f => f.watched)" :key="film.id" class="film-item">
-          <!-- Input for film title -->
-          <input
-            v-model="inputTitle"
-            placeholder="Film hinzufügen"
-            class="film-input"
-          />
-          <!-- Input for film year -->
-          <input
-            v-model.number="inputYear"
-            type="number"
-            placeholder="Jahr"
-            class="film-input year-input"
-          />
-          <!-- Add film button -->
-          <button @click="saveFilm" class="add-button">
-            Film hinzufügen
-          </button>
-          </li>
-          </ul>
-        </div>
-
-        <!-- Error message -->
-        <p v-if="errorMessage" class="error-message">
-          {{ errorMessage }}
-        </p>
-
-        <!-- Message if no films available -->
-        <p v-if="films.length < 1" class="warning">
-          Keine Filme vorhanden
-        </p>
-
         <!-- List of films -->
         <ul class="film-list">
-          <li v-for="film in films" :key="film.id" class="film-item">
+          <li v-for="film in films.filter(f => !f.watched)" :key="film.id" class="film-item">
             <span class="film-title">
               {{ film.title }} ({{ film.year }})
             </span>
+            <button
+              @click="markAsWatched(film.id)"
+              class="seen-button"
+            >
+              Gesehen
+            </button>
             <button
               @click="deleteFilm(film.id)"
               class="delete-button"
             >
               Löschen
             </button>
-          </li>
+            </li>
         </ul>
+
+        <!-- Input und Fehlerbehandlung -->
+        <div class="input-container">
+          <input
+            v-model="inputTitle"
+            placeholder="Film hinzufügen"
+            class="film-input"
+          />
+          <input
+            v-model.number="inputYear"
+            type="number"
+            placeholder="Jahr"
+            class="film-input year-input"
+          />
+          <button @click="saveFilm" class="add-button">
+            Film hinzufügen
+          </button>
+        </div>
+
+        <p v-if="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </p>
+
+        <p v-if="films.length < 1" class="warning">
+          Keine Filme vorhanden
+        </p>
       </div>
     </div>
   </div>
@@ -204,6 +218,20 @@ function isValidYear(year: number): boolean {
 }
 
 .add-button:hover {
+  background-color: #372462;
+}
+
+.seen-button {
+  background-color: #6e3397;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.4em 0.8em;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.seen-button:hover {
   background-color: #372462;
 }
 

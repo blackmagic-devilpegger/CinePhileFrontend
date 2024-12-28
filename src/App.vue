@@ -12,8 +12,8 @@ import { RouterLink, RouterView } from 'vue-router'
 
       <nav>
         <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/film-option-api-list">Filmliste</RouterLink>
-        <RouterLink to="/about">Watchlist</RouterLink>
+        <RouterLink to="/filmlist">Filmliste</RouterLink>
+        <RouterLink to="/watchlist">Watchlist</RouterLink>
       </nav>
       </div>
   </header>
@@ -77,6 +77,8 @@ nav a {
   display: inline-block;
   padding: 0 1rem;
   border-left: 1px solid var(--color-border);
+  color: #4a148c;
+  background-color: #ffffff;
 }
 
 nav a:first-of-type {
