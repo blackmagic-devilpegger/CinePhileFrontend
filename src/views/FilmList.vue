@@ -52,9 +52,25 @@ function saveFilm(): void {
 }
 
 // Delete a film by index
-function deleteFilm(index: number): void {
-  films.value.splice(index, 1);
+function deleteFilm(id: number): void {
+  axios
+    .delete(`${apiEndpoint}/${id}`)
+    .then(() => {
+      console.log(`Film mit ID ${id} wurde erfolgreich gelöscht.`);
+      return axios.get<Film[]>(apiEndpoint); // Aktualisiere die Liste der Filme
+    })
+    .then((response) => {
+      films.value = response.data; // Aktualisiere die Film-Liste im Frontend
+    })
+    .catch((error) => {
+      if (error.response && error.response.status === 404) {
+        console.error('Film nicht gefunden.');
+      } else {
+        console.error('Fehler beim Löschen des Films:', error.message);
+      }
+    });
 }
+
 
 // Validate year
 function isValidYear(year: number): boolean {
@@ -100,12 +116,12 @@ function isValidYear(year: number): boolean {
 
         <!-- List of films -->
         <ul class="film-list">
-          <li v-for="(film, index) in films" :key="index" class="film-item">
+          <li v-for="film in films" :key="film.id" class="film-item">
             <span class="film-title">
               {{ film.title }} ({{ film.year }})
             </span>
             <button
-              @click="deleteFilm(index)"
+              @click="deleteFilm(film.id)"
               class="delete-button"
             >
               Löschen
