@@ -102,7 +102,7 @@ function isValidYear(year: number): boolean {
 <template>
   <div class="outer-container">
     <div class="inner-container">
-      <h2 class="title">🎬 Meine Watchlist</h2>
+      <h2 class="title">🎬 Meine Watch-Liste</h2>
 
       <div class="content-wrapper">
 

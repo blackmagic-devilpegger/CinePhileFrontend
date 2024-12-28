@@ -11,7 +11,7 @@ import { RouterLink, RouterView } from 'vue-router'
       <p>Verwalte deine Liebe für Filme 📽️</p>
 
       <nav>
-        <RouterLink to="/">Home</RouterLink>
+:)        <RouterLink to="/">Start</RouterLink>
         <RouterLink to="/filmlist">Filmliste</RouterLink>
         <RouterLink to="/watchlist">Watchlist</RouterLink>
       </nav>
