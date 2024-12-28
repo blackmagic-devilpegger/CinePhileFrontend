@@ -4,6 +4,7 @@ import axios from 'axios';
 import type { Film } from '@/model/Film';
 import { v4 as uuidv4 } from 'uuid';
 
+
 const apiEndpoint = import.meta.env.VITE_APP_BACKEND_BASE_URL + '/films';
 
 // Reactive properties
