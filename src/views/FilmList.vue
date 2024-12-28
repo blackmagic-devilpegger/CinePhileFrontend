@@ -89,10 +89,9 @@ function isValidYear(year: number): boolean {
       <h2 class="title">🎬 Meine Film-Liste</h2>
 
       <div class="content-wrapper">
+        <!-- Input for film title -->
         <div class="input-container">
-          <ul>
-          <li v-for="film in films.filter(f => f.watched)" :key="film.id" class="film-item">
-          <!-- Input for film title -->
+
           <input
             v-model="inputTitle"
             placeholder="Film hinzufügen"
@@ -109,8 +108,6 @@ function isValidYear(year: number): boolean {
           <button @click="saveFilm" class="add-button">
             Film hinzufügen
           </button>
-          </li>
-          </ul>
         </div>
 
         <!-- Error message -->
@@ -125,7 +122,7 @@ function isValidYear(year: number): boolean {
 
         <!-- List of films -->
         <ul class="film-list">
-          <li v-for="film in films" :key="film.id" class="film-item">
+          <li v-for="film in films.filter(f => f.watched)" :key="film.id" class="film-item">
             <span class="film-title">
               {{ film.title }} ({{ film.year }})
             </span>

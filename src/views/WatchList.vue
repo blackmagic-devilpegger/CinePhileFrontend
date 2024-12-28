@@ -105,26 +105,6 @@ function isValidYear(year: number): boolean {
       <h2 class="title">🎬 Meine Watchlist</h2>
 
       <div class="content-wrapper">
-        <!-- List of films -->
-        <ul class="film-list">
-          <li v-for="film in films.filter(f => !f.watched)" :key="film.id" class="film-item">
-            <span class="film-title">
-              {{ film.title }} ({{ film.year }})
-            </span>
-            <button
-              @click="markAsWatched(film)"
-              class="seen-button"
-            >
-              Gesehen
-            </button>
-            <button
-              @click="deleteFilm(film.id)"
-              class="delete-button"
-            >
-              Löschen
-            </button>
-            </li>
-        </ul>
 
         <!-- Input und Fehlerbehandlung -->
         <div class="input-container">
@@ -151,6 +131,27 @@ function isValidYear(year: number): boolean {
         <p v-if="films.length < 1" class="warning">
           Keine Filme vorhanden
         </p>
+
+        <!-- List of films -->
+        <ul class="film-list">
+          <li v-for="film in films.filter(f => !f.watched)" :key="film.id" class="film-item">
+            <span class="film-title">
+              {{ film.title }} ({{ film.year }})
+            </span>
+            <button
+              @click="markAsWatched(film)"
+              class="seen-button"
+            >
+              Gesehen?
+            </button>
+            <button
+              @click="deleteFilm(film.id)"
+              class="delete-button"
+            >
+              Entfernen
+            </button>
+          </li>
+        </ul>
       </div>
     </div>
   </div>

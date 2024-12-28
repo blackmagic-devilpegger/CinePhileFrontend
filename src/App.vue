@@ -53,6 +53,7 @@ header {
 .logo {
   display: block;
   margin: 0 auto 2rem;
+  border-radius: 8px;
 }
 
 nav {
