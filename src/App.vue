@@ -4,16 +4,16 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+    <img alt="Cinephile Logo" class="logo" src="@/assets/trainspotting.jpg" width="150" height="150" />
 
     <div class="wrapper">
-      <h1>Wilkommen bei Cinephile</h1>
+      <h1>Cinephile🫐🪼🦋💫</h1>
       <p>Verwalte deine Liebe für Filme</p>
 
       <nav>
         <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-        <RouterLink to="/film-option-api-list">FilmOptionApiList</RouterLink>
+        <RouterLink to="/film-option-api-list">Filmliste</RouterLink>
+        <RouterLink to="/about">Watchlist</RouterLink>
       </nav>
     </div>
   </header>
@@ -21,7 +21,17 @@ import { RouterLink, RouterView } from 'vue-router'
   <RouterView />
 </template>
 
-<style scoped>
+<style>
+body, html{
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: rgb(17,16,45);
+  background: linear-gradient(90deg, rgba(17,16,45,0.6783963585434174) 0%, rgba(224,134,159,0.6055672268907564) 47%, rgba(114,182,249,0.6223739495798319) 100%);
+  background-attachment: fixed;
+  font-family: Garamond, serif;
+}
+
 header {
   line-height: 1.5;
   max-height: 100vh;
