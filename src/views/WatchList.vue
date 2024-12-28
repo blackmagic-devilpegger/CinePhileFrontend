@@ -112,7 +112,7 @@ function isValidYear(year: number): boolean {
               {{ film.title }} ({{ film.year }})
             </span>
             <button
-              @click="markAsWatched(film.id)"
+              @click="markAsWatched(film)"
               class="seen-button"
             >
               Gesehen
