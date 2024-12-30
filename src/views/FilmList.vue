@@ -17,12 +17,14 @@ onMounted(() => {
   axios
     .get<Film[]>(apiEndpoint)
     .then((response) => {
-      films.value = response.data.filter((film) => film.watched);
+      films.value = response.data.filter((film) => !film.watched);
     })
     .catch((error) => {
-      error.value = 'Fehler beim Laden der Filme.';
+      console.error('Fehler beim Abrufen der Filme:', error.message);
+      errorMessage.value = 'Fehler beim Laden der Filme.';
     });
 });
+
 
 // Add a new film
 function saveFilm(): void {
