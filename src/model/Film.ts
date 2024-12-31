@@ -1,6 +1,7 @@
 export interface Film {
-  year: number,
-  title: string,
-  id: number,
-  watched: boolean,
+  id: number;
+  title: string;
+  year: number;
+  watched: boolean;
+  rating: number;
 }

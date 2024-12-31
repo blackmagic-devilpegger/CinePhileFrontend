@@ -83,6 +83,25 @@ function deleteFilm(id: number): void {
 function isValidYear(year: number): boolean {
   return year >= 1888 && year <= 2030;
 }
+
+// Rate a film
+function rateFilm(filmId: number, rating: number): void {
+  const film = films.value.find((f) => f.id === filmId);
+  if (film) {
+    film.rating = rating;
+
+    // Optional: API-Aufruf, um die Bewertung zu speichern
+    axios
+      .put(`${apiEndpoint}/${filmId}`, { ...film, rating })
+      .then(() => {
+        console.log(`Film ${film.title} wurde mit ${rating} Sternen bewertet.`);
+      })
+      .catch((error) => {
+        console.error('Fehler beim Speichern der Bewertung:', error.message);
+      });
+  }
+}
+
 </script>
 
 <template>
@@ -125,9 +144,22 @@ function isValidYear(year: number): boolean {
         <!-- List of films -->
         <ul class="film-list">
           <li v-for="film in films.filter(f => f.watched)" :key="film.id" class="film-item">
-            <span class="film-title">
-              {{ film.title }} ({{ film.year }})
-            </span>
+    <span class="film-title">
+      {{ film.title }} ({{ film.year }})
+    </span>
+
+            <!-- Bewertungssterne -->
+        <div class="rating">
+      <span
+        v-for="star in 5"
+        :key="star"
+        :class="{ active: star <= film.rating }"
+        @click="rateFilm(film.id, star)"
+      >
+        ★
+      </span>
+            </div>
+
             <button
               @click="deleteFilm(film.id)"
               class="delete-button"
@@ -257,4 +289,27 @@ function isValidYear(year: number): boolean {
 .delete-button:hover {
   background-color: #372462;
 }
+
+
+
+
+.rating {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.rating span {
+  font-size: 1.5rem;
+  color: lightgray;
+}
+
+.rating span.active {
+  color: gold;
+}
+
+.rating span:hover,
+.rating span:hover ~ span {
+  color: orange;
+}
+
 </style>
