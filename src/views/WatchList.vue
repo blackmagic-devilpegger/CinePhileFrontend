@@ -43,6 +43,7 @@ function saveFilm(): void {
     year: inputYear.value,
     id: currentID++,
     watched: false,
+    rating: 0
   };
 
   axios

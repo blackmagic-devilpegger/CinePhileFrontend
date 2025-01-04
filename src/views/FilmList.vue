@@ -17,7 +17,7 @@ onMounted(() => {
   axios
     .get<Film[]>(apiEndpoint)
     .then((response) => {
-      films.value = response.data.filter((film) => !film.watched);
+      films.value = response.data;
     })
     .catch((error) => {
       console.error('Fehler beim Abrufen der Filme:', error.message);
@@ -90,7 +90,6 @@ function rateFilm(filmId: number, rating: number): void {
   if (film) {
     film.rating = rating;
 
-    // Optional: API-Aufruf, um die Bewertung zu speichern
     axios
       .put(`${apiEndpoint}/${filmId}`, { ...film, rating })
       .then(() => {
@@ -101,7 +100,6 @@ function rateFilm(filmId: number, rating: number): void {
       });
   }
 }
-
 </script>
 
 <template>
@@ -143,21 +141,21 @@ function rateFilm(filmId: number, rating: number): void {
 
         <!-- List of films -->
         <ul class="film-list">
-          <li v-for="film in films.filter(f => f.watched)" :key="film.id" class="film-item">
-    <span class="film-title">
-      {{ film.title }} ({{ film.year }})
-    </span>
-
-            <!-- Bewertungssterne -->
-        <div class="rating">
-      <span
-        v-for="star in 5"
-        :key="star"
-        :class="{ active: star <= film.rating }"
-        @click="rateFilm(film.id, star)"
-      >
-        ★
+          <li v-for="film in films" :key="film.id" class="film-item">
+      <span class="film-title">
+        {{ film.title }} ({{ film.year }})
       </span>
+
+            <!-- Updated star rating -->
+            <div class="rating">
+        <span
+          v-for="star in [5, 4, 3, 2, 1]"
+          :key="star"
+          :class="{ active: star <= (film.rating || 0) }"
+          @click="rateFilm(film.id, star)"
+        >
+          ★
+        </span>
             </div>
 
             <button
@@ -269,11 +267,42 @@ function rateFilm(filmId: number, rating: number): void {
   background-color: #eee9f3;
   margin-bottom: 0.5em;
   border-radius: 4px;
+  gap: 1em; /* Add consistent spacing between elements */
 }
 
 .film-title {
   font-size: 1.1em;
   color: #333;
+  flex: 1; /* Allow title to take available space */
+}
+
+.rating {
+  display: flex;
+  flex-direction: row-reverse; /* Reverse the order of stars */
+  gap: 2px; /* Add consistent spacing between stars */
+  min-width: 120px; /* Ensure consistent width for rating container */
+  justify-content: flex-end; /* Align stars to the end */
+}
+
+.rating span {
+  font-size: 1.5rem;
+  color: lightgray;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.rating span.active {
+  color: gold;
+}
+
+/* Update hover styles to work from right to left */
+.rating:hover span {
+  color: lightgray;
+}
+
+.rating span:hover,
+.rating span:hover ~ span {
+  color: orange !important;
 }
 
 .delete-button {
@@ -284,32 +313,10 @@ function rateFilm(filmId: number, rating: number): void {
   padding: 0.4em 0.8em;
   cursor: pointer;
   font-size: 0.9em;
+  min-width: 80px; /* Ensure consistent button width */
 }
 
 .delete-button:hover {
   background-color: #372462;
 }
-
-
-
-
-.rating {
-  display: inline-block;
-  cursor: pointer;
-}
-
-.rating span {
-  font-size: 1.5rem;
-  color: lightgray;
-}
-
-.rating span.active {
-  color: gold;
-}
-
-.rating span:hover,
-.rating span:hover ~ span {
-  color: orange;
-}
-
 </style>
