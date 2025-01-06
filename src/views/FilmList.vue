@@ -12,7 +12,14 @@ const inputYear = ref<number | null>(null);
   const errorMessage = ref<string>('');
     let currentID = 0;
 const showPopup = ref(false);
-const selectedFilm = ref<Film | null>(null);
+const selectedFilm = ref<Film>({
+  id: 1,
+  title: '',
+  year: 0,
+  watched: false,
+  rating: 0,
+  notes: '',
+});
 
     // Fetch films from API on mount
     onMounted(() => {
@@ -96,7 +103,14 @@ function openPopup(filmId: number): void {
 // Popup schließen
 function closePopup(): void {
   showPopup.value = false;
-  selectedFilm.value = null;
+  selectedFilm.value = {
+    id: 0,
+    title: '',
+    year: 0,
+    watched: false,
+    rating: 0,
+    notes: '',
+  };
 }
 
 function handlePopupUpdated(updatedFilm: Film): void {

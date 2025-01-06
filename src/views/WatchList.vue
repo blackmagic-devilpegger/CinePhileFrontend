@@ -5,7 +5,6 @@ import type { Film } from '@/model/Film';
 import BewertungFilm from '@/views/BewertungFilm.vue'
 
 const apiEndpoint = import.meta.env.VITE_APP_BACKEND_BASE_URL + '/films';
-
 const films = ref<Film[]>([]);
 const inputTitle = ref<string>('');
 const inputYear = ref<number | null>(null);
