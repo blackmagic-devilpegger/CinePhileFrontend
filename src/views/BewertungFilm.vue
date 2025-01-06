@@ -5,7 +5,7 @@ import type { Film } from '@/model/Film';
 
 // Define props with proper typing
 const props = defineProps<{
-  film: Film | null;
+  film: Film;
 }>();
 
 // Define emits with proper typing

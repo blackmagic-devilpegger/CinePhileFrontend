@@ -12,7 +12,14 @@ const inputYear = ref<number | null>(null);
 const errorMessage = ref<string>('');
 let currentID = 0;
 const showPopup = ref(false);
-const selectedFilm = ref<Film | null>(null);
+const selectedFilm = ref<Film>({
+  id: 1,
+  title: '',
+  year: 0,
+  watched: false,
+  rating: 0,
+  notes: '',
+});
 
 // Fetch films from API on mount
 onMounted(() => {
@@ -50,6 +57,7 @@ function saveFilm(): void {
     notes: '',
   };
 
+
   axios
     .post(apiEndpoint, newFilm)
     .then(() => { return axios.get<Film[]>(apiEndpoint);
@@ -86,13 +94,23 @@ function openPopup(filmId: number): void {
   if (film) {
     selectedFilm.value = film;
     showPopup.value = true;
+  } else {
+    console.error(`Film mit ID ${filmId} wurde nicht gefunden.`);
   }
 }
 
 
+
 function closePopup(): void {
   showPopup.value = false;
-  selectedFilm.value = null;
+  selectedFilm.value = {
+    id: 0,
+    title: '',
+    year: 0,
+    watched: false,
+    rating: 0,
+    notes: '',
+  };
 }
 
 function handlePopupUpdated(updatedFilm: Film): void {
@@ -324,18 +342,4 @@ function isValidYear(year: number): boolean {
   background-color: #372462;
 }
 
-.rating-button {
-  background-color: #6e3397;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 0.4em 0.8em;
-  cursor: pointer;
-  font-size: 0.9em;
-  min-width: 80px; /* Ensure consistent button width */
-}
-
-.rating-button:hover {
-  background-color: #372462;
-}
 </style>
