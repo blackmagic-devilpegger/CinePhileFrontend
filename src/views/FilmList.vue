@@ -2,61 +2,68 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import type { Film } from '@/model/Film';
-
+import BewertungFilm from '@/views/BewertungFilm.vue'
 
 const apiEndpoint = import.meta.env.VITE_APP_BACKEND_BASE_URL + '/films';
 
 const films = ref<Film[]>([]);
 const inputTitle = ref<string>('');
 const inputYear = ref<number | null>(null);
-const errorMessage = ref<string>('');
-let currentID = 0;
+  const errorMessage = ref<string>('');
+    let currentID = 0;
+const showPopup = ref(false);
+const selectedFilm = ref<Film | null>(null);
 
-// Fetch films from API on mount
-onMounted(() => {
-  axios
+    // Fetch films from API on mount
+    onMounted(() => {
+    axios
     .get<Film[]>(apiEndpoint)
     .then((response) => {
-      films.value = response.data;
+    films.value = response.data;
     })
     .catch((error) => {
-      console.error('Fehler beim Abrufen der Filme:', error.message);
-      errorMessage.value = 'Fehler beim Laden der Filme.';
+    console.error('Fehler beim Abrufen der Filme:', error.message);
+    errorMessage.value = 'Fehler beim Laden der Filme.';
     });
-});
+    });
 
-
-// Add a new film
-function saveFilm(): void {
-  if (!inputTitle.value.trim()) {
+    // Add a new film
+    function saveFilm(): void {
+    if (!inputTitle.value.trim()) {
     errorMessage.value = 'Bitte geben Sie einen Titel ein.';
     return;
-  }
-  if (!inputYear.value) {
+    }
+    if (!inputYear.value) {
     errorMessage.value = 'Bitte geben Sie ein Jahr ein.';
     return;
-  }
-  if (!isValidYear(inputYear.value)) {
+    }
+    if (!isValidYear(inputYear.value)) {
     errorMessage.value = 'Bitte geben Sie ein gültiges Jahr zwischen 1888 und 2030 ein.';
     return;
-  }
+    }
 
-  const newFilm: Film = {
+    const newFilm: Film = {
     title: inputTitle.value,
     year: inputYear.value,
     id: currentID++,
     watched: true,
-  };
+    rating: 0,// Initialize with 0 stars
+    notes: ''
+    };
 
-  axios
+    axios
     .post(apiEndpoint, newFilm)
-    .then(() => { return axios.get<Film[]>(apiEndpoint);
+    .then(() => {
+    return axios.get<Film[]>(apiEndpoint);
     })
-    .then((response) => (films.value = response.data))
+    .then((response) => {
+    films.value = response.data;
+    })
     .catch((error) => console.log(error));
-  inputTitle.value = '';
-  inputYear.value = null;
-}
+
+    inputTitle.value = '';
+    inputYear.value = null;
+    }
 
 // Delete a film by index
 function deleteFilm(id: number): void {
@@ -76,6 +83,28 @@ function deleteFilm(id: number): void {
         console.error('Fehler beim Löschen des Films:', error.message);
       }
     });
+}
+
+function openPopup(filmId: number): void {
+  const film = films.value.find((f) => f.id === filmId);
+  if (film) {
+    selectedFilm.value = film;
+    showPopup.value = true;
+  }
+}
+
+// Popup schließen
+function closePopup(): void {
+  showPopup.value = false;
+  selectedFilm.value = null;
+}
+
+function handlePopupUpdated(updatedFilm: Film): void {
+  const index = films.value.findIndex((f) => f.id === updatedFilm.id);
+  if (index !== -1) {
+    films.value[index] = updatedFilm;
+  }
+  closePopup();
 }
 
 
@@ -141,7 +170,7 @@ function rateFilm(filmId: number, rating: number): void {
 
         <!-- List of films -->
         <ul class="film-list">
-          <li v-for="film in films" :key="film.id" class="film-item">
+          <li v-for="film in films.filter(f => f.watched)" :key="film.id" class="film-item">
       <span class="film-title">
         {{ film.title }} ({{ film.year }})
       </span>
@@ -157,7 +186,7 @@ function rateFilm(filmId: number, rating: number): void {
           ★
         </span>
             </div>
-
+            <button @click="openPopup(film.id)" class="rating-button">Bewerten</button>
             <button
               @click="deleteFilm(film.id)"
               class="delete-button"
@@ -168,6 +197,12 @@ function rateFilm(filmId: number, rating: number): void {
         </ul>
       </div>
     </div>
+    <BewertungFilm
+      v-if="showPopup"
+      :film="selectedFilm"
+      @close="closePopup"
+      @updated="handlePopupUpdated"
+    />
   </div>
 </template>
 
@@ -317,6 +352,22 @@ function rateFilm(filmId: number, rating: number): void {
 }
 
 .delete-button:hover {
+  background-color: #372462;
+}
+
+
+.rating-button {
+  background-color: #6e3397;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.4em 0.8em;
+  cursor: pointer;
+  font-size: 0.9em;
+  min-width: 80px; /* Ensure consistent button width */
+}
+
+.rating-button:hover {
   background-color: #372462;
 }
 </style>

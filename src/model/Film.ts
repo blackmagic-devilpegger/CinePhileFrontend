@@ -4,4 +4,5 @@ export interface Film {
   year: number;
   watched: boolean;
   rating: number;
+  notes: string;
 }

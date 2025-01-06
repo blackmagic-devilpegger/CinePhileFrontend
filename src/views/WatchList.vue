@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import type { Film } from '@/model/Film';
+import BewertungFilm from '@/views/BewertungFilm.vue'
 
 const apiEndpoint = import.meta.env.VITE_APP_BACKEND_BASE_URL + '/films';
 
@@ -10,6 +11,8 @@ const inputTitle = ref<string>('');
 const inputYear = ref<number | null>(null);
 const errorMessage = ref<string>('');
 let currentID = 0;
+const showPopup = ref(false);
+const selectedFilm = ref<Film | null>(null);
 
 // Fetch films from API on mount
 onMounted(() => {
@@ -43,7 +46,8 @@ function saveFilm(): void {
     year: inputYear.value,
     id: currentID++,
     watched: false,
-    rating: 0
+    rating: 0,
+    notes: '',
   };
 
   axios
@@ -68,10 +72,35 @@ function markAsWatched(film: Film): void {
     })
     .then((response) => {
       films.value = response.data; // Aktualisiere die Liste
+      if (updatedFilm.watched) {
+        openPopup(updatedFilm.id); // Öffne das Popup nur, wenn der Film als gesehen markiert wurde
+      }
     })
     .catch((error) => {
       console.error('Fehler beim Aktualisieren des Films:', error.message);
     });
+}
+
+function openPopup(filmId: number): void {
+  const film = films.value.find((f) => f.id === filmId);
+  if (film) {
+    selectedFilm.value = film;
+    showPopup.value = true;
+  }
+}
+
+
+function closePopup(): void {
+  showPopup.value = false;
+  selectedFilm.value = null;
+}
+
+function handlePopupUpdated(updatedFilm: Film): void {
+  const index = films.value.findIndex((f) => f.id === updatedFilm.id);
+  if (index !== -1) {
+    films.value[index] = updatedFilm;
+  }
+  closePopup();
 }
 
 
@@ -155,6 +184,12 @@ function isValidYear(year: number): boolean {
         </ul>
       </div>
     </div>
+    <BewertungFilm
+      v-if="showPopup"
+      :film="selectedFilm"
+      @close="closePopup"
+      @updated="handlePopupUpdated"
+    />
   </div>
 </template>
 
@@ -286,6 +321,21 @@ function isValidYear(year: number): boolean {
 }
 
 .delete-button:hover {
+  background-color: #372462;
+}
+
+.rating-button {
+  background-color: #6e3397;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.4em 0.8em;
+  cursor: pointer;
+  font-size: 0.9em;
+  min-width: 80px; /* Ensure consistent button width */
+}
+
+.rating-button:hover {
   background-color: #372462;
 }
 </style>
