@@ -45,16 +45,6 @@ function closePopup(): void {
   <div class="popup-container">
     <div class="popup-content">
       <h3>{{ film.title }} bewerten</h3>
-      <div class="rating">
-        <span
-          v-for="star in [5, 4, 3, 2, 1]"
-          :key="star"
-          :class="{ active: star <= (film.rating || 0) }"
-          @click="saveChanges(star)"
-        >
-          ★
-        </span>
-      </div>
       <div class="notes-container">
         <textarea
           v-model="notes"
@@ -102,23 +92,12 @@ function closePopup(): void {
   margin-bottom: 1em;
 }
 
-.rating {
-  display: flex;
-  flex-direction: row-reverse;
-  justify-content: center;
-  margin: 1em 0;
-  gap: 0.3em;
-}
 
 .rating span {
   font-size: 2rem;
   cursor: pointer;
   color: lightgray;
   transition: color 0.2s;
-}
-
-.rating span.active {
-  color: gold;
 }
 
 /* Update hover styles to work from right to left */
