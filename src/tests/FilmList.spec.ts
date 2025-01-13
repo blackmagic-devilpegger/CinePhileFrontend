@@ -1,9 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import FilmList from '@/views/FilmList.vue'; // Passe den Pfad an
-import type { Film } from '@/model/Film';
 import.meta.env.VITE_APP_BACKEND_BASE_URL = 'http://localhost:8080';
 
 
