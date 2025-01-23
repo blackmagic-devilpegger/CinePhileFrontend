@@ -8,7 +8,7 @@ import { RouterLink, RouterView } from 'vue-router'
 
     <div class="wrapper">
       <h1>Cinephile🫐🪼🦋💫</h1>
-      <p>Verwalte deine Liebe für Filme 📽️</p>
+      <p>Verwalte deine Liebe für Filme📽️</p>
 
       <nav>
         <RouterLink to="/">Start</RouterLink>
